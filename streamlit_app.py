@@ -2,7 +2,7 @@ import streamlit as st
 import random
 
 # ==========================================
-# 1. CẤU HÌNH TRANG & GIAO DIỆN PASTEL NỮ TÍNH
+# 1. CẤU HÌNH TRANG & GIAO DIỆN PASTEL THẨM MỸ NỮ TÍNH
 # ==========================================
 st.set_page_config(
     page_title="Ôn Tập Từ Vựng - Thiên Trang",
@@ -11,34 +11,58 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Giao diện Pastel dịu dàng, nữ tính (Hồng phấn, Lavender nhạt, Kem sữa)
+# Giao diện Pastel dịu dàng, thẩm mỹ (Ẩn sạch icon menu/deploy, màu tone-sur-tone thanh lịch)
 st.markdown("""
 <style>
-    /* Nền tổng thể mềm mại */
+    /* ======================================================== */
+    /* 1. ẨN HOÀN TOÀN ICON MENU, NÚT DEPLOY & HEADER GÓC PHẢI TRÊN */
+    /* ======================================================== */
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    header {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    [data-testid="stHeader"] {display: none !important; height: 0 !important;}
+    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
+    .stDeployButton {display: none !important;}
+    div[data-testid="stStatusWidget"] {display: none !important;}
+
+    /* Căn chỉnh lại khoảng cách trên cùng khi đã ẩn header */
+    .block-container {
+        padding-top: 1.8rem !important;
+        padding-bottom: 3rem !important;
+        max-width: 960px !important;
+    }
+
+    /* ======================================================== */
+    /* 2. BẢNG MÀU NỮ TÍNH, THANH LỊCH, KHÔNG CHÓI MẮT        */
+    /* Palette: Rose Milk, Dusty Mauve, Warm Linen & Lavender Mist */
+    /* ======================================================== */
     .stApp {
-        background: linear-gradient(135deg, #FFF5F7 0%, #F5F3FF 50%, #FAF5FF 100%);
+        background: linear-gradient(145deg, #FFF9FA 0%, #FBF6FC 45%, #F7F5FA 100%);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: #372A33;
     }
     
     /* Header chính */
     .app-title {
         text-align: center;
-        color: #9D174D;
-        font-size: 28px;
+        color: #6B2A4E;
+        font-size: 27px;
         font-weight: 700;
-        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+        margin-bottom: 5px;
     }
     .app-subtitle {
         text-align: center;
-        color: #831843;
+        color: #8C5874;
         font-size: 14px;
-        margin-bottom: 20px;
+        font-weight: 400;
+        margin-bottom: 22px;
     }
 
     /* Thẻ Flashcard lật 3D */
     .flashcard-wrapper {
-        perspective: 1000px;
-        margin: 15px auto;
+        perspective: 1200px;
+        margin: 18px auto;
         max-width: 580px;
         cursor: pointer;
     }
@@ -48,11 +72,11 @@ st.markdown("""
     .flashcard-inner {
         position: relative;
         width: 100%;
-        min-height: 340px;
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        min-height: 350px;
+        transition: transform 0.65s cubic-bezier(0.34, 1.2, 0.64, 1);
         transform-style: preserve-3d;
-        border-radius: 28px;
-        box-shadow: 0 12px 30px -5px rgba(244, 114, 182, 0.15);
+        border-radius: 26px;
+        box-shadow: 0 10px 30px -6px rgba(173, 114, 142, 0.12), 0 4px 12px -2px rgba(173, 114, 142, 0.06);
     }
     .flashcard-toggle:checked + .flashcard-inner {
         transform: rotateY(180deg);
@@ -62,65 +86,67 @@ st.markdown("""
         width: 100%;
         height: 100%;
         backface-visibility: hidden;
-        border-radius: 28px;
-        padding: 32px 28px;
+        border-radius: 26px;
+        padding: 30px 28px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         background: #FFFFFF;
-        border: 1.5px solid #FBCFE8;
+        border: 1px solid #F3DAE4;
     }
     .flashcard-front {
         align-items: center;
         text-align: center;
-        background: linear-gradient(180deg, #FFFFFF 0%, #FFF1F2 100%);
+        background: linear-gradient(180deg, #FFFFFF 0%, #FFF7F9 100%);
     }
     .flashcard-back {
         transform: rotateY(180deg);
-        background: linear-gradient(180deg, #FAF5FF 0%, #FDF2F8 100%);
-        border-color: #F5D0FE;
+        background: linear-gradient(180deg, #FCF9FD 0%, #FFF8FA 100%);
+        border-color: #EED6E6;
     }
     .badge-pill {
-        background: #FCE7F3;
-        color: #BE185D;
-        padding: 5px 16px;
+        background: #FCEEF3;
+        color: #8E3964;
+        padding: 4px 15px;
         border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        border: 1px solid #F7D7E3;
     }
     .chinese-word {
-        font-size: 52px;
-        color: #831843;
+        font-size: 50px;
+        color: #5C1E3F;
         margin: 12px 0 6px 0;
         font-weight: 700;
+        letter-spacing: 1px;
     }
     .pinyin-word {
-        font-size: 24px;
-        color: #D946EF;
-        font-weight: 700;
+        font-size: 22px;
+        color: #9D4E84;
+        font-weight: 600;
         margin-bottom: 12px;
     }
     
     /* Cụm từ và ví dụ có Pinyin */
     .colloc-item {
         background: #FFFFFF;
-        padding: 7px 12px;
+        padding: 8px 14px;
         border-radius: 12px;
         margin-bottom: 6px;
         font-size: 13.5px;
-        color: #374151;
-        border: 1px solid #FCE7F3;
-        line-height: 1.4;
+        color: #4A3A44;
+        border: 1px solid #F3DFE7;
+        line-height: 1.45;
     }
     .example-box {
-        background: #FFF1F2;
-        padding: 11px 15px;
+        background: #FAF3F6;
+        padding: 12px 16px;
         border-radius: 14px;
         font-size: 13px;
-        color: #4C1D95;
-        border: 1px solid #FFE4E6;
+        color: #4B273F;
+        border: 1px solid #F2DFE7;
         margin-top: 10px;
         line-height: 1.5;
     }
@@ -129,10 +155,27 @@ st.markdown("""
     .vocab-card {
         background: #FFFFFF;
         border-radius: 20px;
-        padding: 20px 22px;
+        padding: 20px 24px;
         margin-bottom: 14px;
-        border: 1px solid #FBCFE8;
-        box-shadow: 0 4px 15px -2px rgba(244, 114, 182, 0.08);
+        border: 1px solid #F3DFE7;
+        box-shadow: 0 4px 18px -4px rgba(173, 114, 142, 0.07);
+    }
+
+    /* Tinh chỉnh thanh chọn & nút bấm cho tiệp màu nhẹ nhàng */
+    .stSelectbox div[data-baseweb="select"] {
+        border-radius: 14px;
+        border-color: #F1D4DF !important;
+    }
+    .stButton>button {
+        border-radius: 16px !important;
+        border-color: #F1D4DF !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+    }
+    .stButton>button:hover {
+        border-color: #D697B4 !important;
+        color: #6B2A4E !important;
+        background-color: #FFF5F8 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -443,7 +486,7 @@ failed_count = len(st.session_state.failed_ids.intersection(scope_ids))
 pct = int((learned_count / total_words) * 100) if total_words > 0 else 0
 
 st.markdown(f"""
-<div style='background:linear-gradient(90deg, #FDF2F8 0%, #FAF5FF 100%); padding:10px 18px; border-radius:16px; border:1px solid #FBCFE8; margin-bottom:16px; font-size:13.5px; color:#831843;'>
+<div style='background:linear-gradient(90deg, #FDF4F7 0%, #FAF6FC 100%); padding:10px 18px; border-radius:16px; border:1px solid #F5DBE5; margin-bottom:16px; font-size:13.5px; color:#6B2A4E;'>
     ✨ <b>Tiến độ học tập:</b> Đã thuộc: <b>{learned_count}/{total_words}</b> ({pct}%) • Cần ôn lại: <b>{failed_count}</b> từ
 </div>
 """, unsafe_allow_html=True)
@@ -480,24 +523,24 @@ if mode_choice == "Thẻ Flashcard":
                         <div class="chinese-word">{cur_word['word']}</div>
                         <div class="pinyin-word">{cur_word['pinyin']}</div>
                     </div>
-                    <div style="color: #9D174D; font-size: 13px; font-weight: 500;">👆 <b>Chạm thẻ để lật xem nghĩa & ví dụ</b></div>
+                    <div style="color: #8C5874; font-size: 13px; font-weight: 500;">👆 <b>Chạm thẻ để lật xem nghĩa & ví dụ</b></div>
                 </div>
                 <!-- MẶT SAU -->
                 <div class="flashcard-face flashcard-back">
                     <div>
                         <div style="display:flex; justify-content:space-between; align-items:baseline;">
                             <div>
-                                <span style="font-size:26px; color:#831843; font-weight:700;">{cur_word['word']}</span>
-                                <span style="font-size:18px; color:#D946EF; margin-left:8px; font-weight:700;">{cur_word['pinyin']}</span>
+                                <span style="font-size:26px; color:#5C1E3F; font-weight:700;">{cur_word['word']}</span>
+                                <span style="font-size:18px; color:#9D4E84; margin-left:8px; font-weight:700;">{cur_word['pinyin']}</span>
                             </div>
                             <span class="badge-pill">BÀI {cur_word['lesson']}</span>
                         </div>
-                        <div style="color:#059669; font-weight:700; font-size:18px; margin:6px 0 10px 0;">👉 {cur_word['meaning']}</div>
-                        <div style="font-size:12.5px; font-weight:700; color:#831843; margin-bottom:4px;">CỤM TỪ KẾT HỢP (KÈM PINYIN):</div>
+                        <div style="color:#2E7D5E; font-weight:700; font-size:18px; margin:6px 0 10px 0;">👉 {cur_word['meaning']}</div>
+                        <div style="font-size:12px; font-weight:700; color:#6B2A4E; letter-spacing:0.5px; margin-bottom:4px;">CỤM TỪ KẾT HỢP (KÈM PINYIN):</div>
                         {colloc_html}
                         <div class="example-box">💬 <b>Ví dụ:</b><br>{cur_word['example']}</div>
                     </div>
-                    <div style="color: #9D174D; font-size: 12.5px; text-align: center; margin-top:8px;">👆 <b>Chạm lại để lật về chữ Hán</b></div>
+                    <div style="color: #8C5874; font-size: 12.5px; text-align: center; margin-top:8px;">👆 <b>Chạm lại để lật về chữ Hán</b></div>
                 </div>
             </div>
         </label>
@@ -565,8 +608,8 @@ elif mode_choice == "Trắc nghiệm":
 
         with st.container(border=True):
             st.markdown(f"""
-            <h2 style="color:#831843; margin-bottom:4px;">{q_item['word']} <span style="font-size:20px; color:#D946EF; font-weight:normal;">({q_item['pinyin']})</span></h2>
-            <p style="color:#4B5563; font-size:15px; margin-bottom:12px;">👉 Từ trên có nghĩa tiếng Việt tương ứng là gì?</p>
+            <h2 style="color:#5C1E3F; margin-bottom:4px;">{q_item['word']} <span style="font-size:19px; color:#9D4E84; font-weight:normal;">({q_item['pinyin']})</span></h2>
+            <p style="color:#5A4A54; font-size:15px; margin-bottom:12px;">👉 Từ trên có nghĩa tiếng Việt tương ứng là gì?</p>
             """, unsafe_allow_html=True)
 
             selected_answer = st.radio("Chọn đáp án:", q_item["options"], key=f"quiz_radio_{cur_q_idx}")
@@ -611,7 +654,7 @@ elif mode_choice == "Nối từ":
     with st.form("match_form"):
         for w_text in st.session_state.m_words:
             entry = next(item for item in st.session_state.match_sample if item["word"] == w_text)
-            st.markdown(f"👉 Từ: <b style='font-size:18px; color:#831843;'>{w_text}</b> <i>({entry['pinyin']})</i>", unsafe_allow_html=True)
+            st.markdown(f"👉 Từ: <b style='font-size:18px; color:#5C1E3F;'>{w_text}</b> <i>({entry['pinyin']})</i>", unsafe_allow_html=True)
             user_match[w_text] = st.selectbox(
                 f"Nghĩa của {w_text}:",
                 ["-- Chọn nghĩa phù hợp --"] + st.session_state.m_meanings,
@@ -647,11 +690,11 @@ elif mode_choice == "Mục lục từ vựng":
         card_html = f"""
         <div class="vocab-card">
             <div style="display:flex; justify-content:space-between; align-items:baseline;">
-                <span style="font-size:24px; font-weight:700; color:#831843;">{w['word']} <span style="font-size:16px; color:#D946EF; font-weight:700;">{w['pinyin']}</span></span>
+                <span style="font-size:24px; font-weight:700; color:#5C1E3F;">{w['word']} <span style="font-size:16px; color:#9D4E84; font-weight:700;">{w['pinyin']}</span></span>
                 <span class="badge-pill">BÀI {w['lesson']} • #{w['id']}</span>
             </div>
-            <div style="color:#059669; font-weight:700; font-size:16px; margin:4px 0 8px 0;">👉 {w['meaning']}</div>
-            <div style="font-size:12.5px; font-weight:700; color:#831843; margin-bottom:4px;">CỤM TỪ KẾT HỢP (KÈM PINYIN):</div>
+            <div style="color:#2E7D5E; font-weight:700; font-size:16px; margin:4px 0 8px 0;">👉 {w['meaning']}</div>
+            <div style="font-size:12px; font-weight:700; color:#6B2A4E; letter-spacing:0.5px; margin-bottom:4px;">CỤM TỪ KẾT HỢP (KÈM PINYIN):</div>
             {collocs_str}
             <div class="example-box">💬 <b>Ví dụ:</b><br>{w['example']}</div>
         </div>
