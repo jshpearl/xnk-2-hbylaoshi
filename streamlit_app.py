@@ -2,7 +2,7 @@ import streamlit as st
 import random
 
 # ==========================================
-# 1. CẤU HÌNH TRANG & GIAO DIỆN PASTEL THẨM MỸ NỮ TÍNH
+# 1. CẤU HÌNH TRANG & GIAO DIỆN PASTEL NỮ TÍNH DỊU MẮT
 # ==========================================
 st.set_page_config(
     page_title="Ôn Tập Từ Vựng - Thiên Trang",
@@ -11,12 +11,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Giao diện Pastel dịu dàng, thẩm mỹ (Ẩn sạch icon menu/deploy, màu tone-sur-tone thanh lịch)
+# Nhúng CSS tinh tế: Ẩn thanh header/menu góc phải, màu sắc dịu dàng không chói mắt
 st.markdown("""
 <style>
-    /* ======================================================== */
-    /* 1. ẨN HOÀN TOÀN ICON MENU, NÚT DEPLOY & HEADER GÓC PHẢI TRÊN */
-    /* ======================================================== */
+    /* ẨN TOÀN BỘ CỤM ICON, MENU & HEADER GÓC PHẢI TRÊN */
     #MainMenu {visibility: hidden !important; display: none !important;}
     header {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
@@ -25,45 +23,40 @@ st.markdown("""
     .stDeployButton {display: none !important;}
     div[data-testid="stStatusWidget"] {display: none !important;}
 
-    /* Căn chỉnh lại khoảng cách trên cùng khi đã ẩn header */
+    /* Căn chỉnh khoảng cách đỉnh trang */
     .block-container {
-        padding-top: 1.8rem !important;
-        padding-bottom: 3rem !important;
-        max-width: 960px !important;
+        padding-top: 2rem !important;
+        padding-bottom: 3.5rem !important;
+        max-width: 950px !important;
     }
 
-    /* ======================================================== */
-    /* 2. BẢNG MÀU NỮ TÍNH, THANH LỊCH, KHÔNG CHÓI MẮT        */
-    /* Palette: Rose Milk, Dusty Mauve, Warm Linen & Lavender Mist */
-    /* ======================================================== */
+    /* Nền tổng thể: Gradient hồng sữa, kem ngà và tím phấn oải hương */
     .stApp {
-        background: linear-gradient(145deg, #FFF9FA 0%, #FBF6FC 45%, #F7F5FA 100%);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        color: #372A33;
+        background: linear-gradient(145deg, #FFF9FA 0%, #FBF6FC 50%, #F7F5FA 100%);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     
     /* Header chính */
     .app-title {
         text-align: center;
-        color: #6B2A4E;
+        color: #5C1E3F;
         font-size: 27px;
         font-weight: 700;
+        margin-bottom: 4px;
         letter-spacing: -0.3px;
-        margin-bottom: 5px;
     }
     .app-subtitle {
         text-align: center;
-        color: #8C5874;
-        font-size: 14px;
-        font-weight: 400;
+        color: #8C4368;
+        font-size: 13.5px;
         margin-bottom: 22px;
     }
 
     /* Thẻ Flashcard lật 3D */
     .flashcard-wrapper {
-        perspective: 1200px;
-        margin: 18px auto;
-        max-width: 580px;
+        perspective: 1000px;
+        margin: 15px auto;
+        max-width: 560px;
         cursor: pointer;
     }
     .flashcard-toggle {
@@ -72,11 +65,11 @@ st.markdown("""
     .flashcard-inner {
         position: relative;
         width: 100%;
-        min-height: 350px;
-        transition: transform 0.65s cubic-bezier(0.34, 1.2, 0.64, 1);
+        min-height: 330px;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         transform-style: preserve-3d;
         border-radius: 26px;
-        box-shadow: 0 10px 30px -6px rgba(173, 114, 142, 0.12), 0 4px 12px -2px rgba(173, 114, 142, 0.06);
+        box-shadow: 0 10px 28px -4px rgba(173, 114, 142, 0.12);
     }
     .flashcard-toggle:checked + .flashcard-inner {
         transform: rotateY(180deg);
@@ -87,95 +80,76 @@ st.markdown("""
         height: 100%;
         backface-visibility: hidden;
         border-radius: 26px;
-        padding: 30px 28px;
+        padding: 30px 26px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         background: #FFFFFF;
-        border: 1px solid #F3DAE4;
+        border: 1.5px solid #F3DAE4;
     }
     .flashcard-front {
         align-items: center;
         text-align: center;
-        background: linear-gradient(180deg, #FFFFFF 0%, #FFF7F9 100%);
+        background: linear-gradient(180deg, #FFFFFF 0%, #FFF5F8 100%);
     }
     .flashcard-back {
         transform: rotateY(180deg);
-        background: linear-gradient(180deg, #FCF9FD 0%, #FFF8FA 100%);
-        border-color: #EED6E6;
+        background: linear-gradient(180deg, #FDFBFE 0%, #F9F3F7 100%);
+        border-color: #EBD3E0;
     }
     .badge-pill {
-        background: #FCEEF3;
-        color: #8E3964;
-        padding: 4px 15px;
+        background: #F8E7EE;
+        color: #8C2E59;
+        padding: 4px 14px;
         border-radius: 20px;
         font-size: 11.5px;
-        font-weight: 600;
-        letter-spacing: 0.6px;
-        border: 1px solid #F7D7E3;
+        font-weight: 700;
+        letter-spacing: 0.4px;
     }
     .chinese-word {
         font-size: 50px;
         color: #5C1E3F;
-        margin: 12px 0 6px 0;
+        margin: 10px 0 4px 0;
         font-weight: 700;
-        letter-spacing: 1px;
     }
     .pinyin-word {
-        font-size: 22px;
+        font-size: 23px;
         color: #9D4E84;
-        font-weight: 600;
-        margin-bottom: 12px;
+        font-weight: 700;
+        margin-bottom: 10px;
     }
     
     /* Cụm từ và ví dụ có Pinyin */
     .colloc-item {
         background: #FFFFFF;
-        padding: 8px 14px;
-        border-radius: 12px;
-        margin-bottom: 6px;
-        font-size: 13.5px;
-        color: #4A3A44;
-        border: 1px solid #F3DFE7;
-        line-height: 1.45;
+        padding: 6.5px 12px;
+        border-radius: 11px;
+        margin-bottom: 5px;
+        font-size: 13px;
+        color: #374151;
+        border: 1px solid #F3DAE4;
+        line-height: 1.4;
     }
     .example-box {
-        background: #FAF3F6;
-        padding: 12px 16px;
-        border-radius: 14px;
-        font-size: 13px;
-        color: #4B273F;
-        border: 1px solid #F2DFE7;
-        margin-top: 10px;
+        background: #FFF5F8;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 12.5px;
+        color: #5C1E3F;
+        border: 1px solid #FCE4EC;
+        margin-top: 8px;
         line-height: 1.5;
     }
 
-    /* Thẻ trong Mục lục tra cứu */
+    /* Thẻ Mục lục */
     .vocab-card {
         background: #FFFFFF;
-        border-radius: 20px;
-        padding: 20px 24px;
-        margin-bottom: 14px;
-        border: 1px solid #F3DFE7;
-        box-shadow: 0 4px 18px -4px rgba(173, 114, 142, 0.07);
-    }
-
-    /* Tinh chỉnh thanh chọn & nút bấm cho tiệp màu nhẹ nhàng */
-    .stSelectbox div[data-baseweb="select"] {
-        border-radius: 14px;
-        border-color: #F1D4DF !important;
-    }
-    .stButton>button {
-        border-radius: 16px !important;
-        border-color: #F1D4DF !important;
-        font-weight: 600 !important;
-        transition: all 0.2s ease !important;
-    }
-    .stButton>button:hover {
-        border-color: #D697B4 !important;
-        color: #6B2A4E !important;
-        background-color: #FFF5F8 !important;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 12px;
+        border: 1px solid #F3DAE4;
+        box-shadow: 0 4px 12px -2px rgba(173, 114, 142, 0.06);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -442,14 +416,28 @@ if "failed_ids" not in st.session_state:
     st.session_state.failed_ids = set()
 if "card_idx" not in st.session_state:
     st.session_state.card_idx = 0
+
+# State cho Trắc nghiệm (1 nút Tiếp theo duy nhất)
 if "quiz_list" not in st.session_state:
     st.session_state.quiz_list = []
 if "quiz_active_idx" not in st.session_state:
     st.session_state.quiz_active_idx = 0
-if "quiz_answered_correctly" not in st.session_state:
-    st.session_state.quiz_answered_correctly = False
-if "quiz_error_msg" not in st.session_state:
-    st.session_state.quiz_error_msg = ""
+if "quiz_last_feedback" not in st.session_state:
+    st.session_state.quiz_last_feedback = None
+
+# State cho Nối từ 2 cột tương tác
+if "match_cards_left" not in st.session_state:
+    st.session_state.match_cards_left = []
+if "match_cards_right" not in st.session_state:
+    st.session_state.match_cards_right = []
+if "matched_ids" not in st.session_state:
+    st.session_state.matched_ids = set()
+if "selected_left_id" not in st.session_state:
+    st.session_state.selected_left_id = None
+if "selected_right_id" not in st.session_state:
+    st.session_state.selected_right_id = None
+if "match_error_msg" not in st.session_state:
+    st.session_state.match_error_msg = ""
 
 # ==========================================
 # 4. TIÊU ĐỀ & ĐIỀU HƯỚNG
@@ -457,17 +445,17 @@ if "quiz_error_msg" not in st.session_state:
 st.markdown("<div class='app-title'>🌸 Ôn Tập Từ Vựng - Thiên Trang</div>", unsafe_allow_html=True)
 st.markdown("<div class='app-subtitle'>Hệ thống Flashcard & Phản xạ từ vựng Tiếng Trung Dệt May (Bài 1 & Bài 2)</div>", unsafe_allow_html=True)
 
-col_scope, col_mode = st.columns([1, 1.4])
+col_scope, col_mode = st.columns([1, 1.45])
 with col_scope:
     scope_choice = st.selectbox(
-        "📚 Chọn phạm vi:",
+        "📚 Chọn bài học:",
         ["Tất cả (Bài 1 & 2 - 30 từ)", "Bài 1: Công ty & Năng lực xưởng (20 từ)", "Bài 2: Đơn giá, Hàng sẵn & MOQ (10 từ)"],
         index=0
     )
 with col_mode:
     mode_choice = st.radio(
         "🎯 Chế độ:",
-        ["Thẻ Flashcard", "Trắc nghiệm", "Nối từ", "Mục lục từ vựng", "Tiến độ"],
+        ["Thẻ Flashcard", "Trắc nghiệm", "Nối từ 2 cột", "Mục lục từ vựng", "Tiến độ"],
         horizontal=True
     )
 
@@ -486,7 +474,7 @@ failed_count = len(st.session_state.failed_ids.intersection(scope_ids))
 pct = int((learned_count / total_words) * 100) if total_words > 0 else 0
 
 st.markdown(f"""
-<div style='background:linear-gradient(90deg, #FDF4F7 0%, #FAF6FC 100%); padding:10px 18px; border-radius:16px; border:1px solid #F5DBE5; margin-bottom:16px; font-size:13.5px; color:#6B2A4E;'>
+<div style='background:linear-gradient(90deg, #FDF5F8 0%, #F9F3F7 100%); padding:9px 18px; border-radius:15px; border:1px solid #F3DAE4; margin-bottom:16px; font-size:13.5px; color:#5C1E3F;'>
     ✨ <b>Tiến độ học tập:</b> Đã thuộc: <b>{learned_count}/{total_words}</b> ({pct}%) • Cần ôn lại: <b>{failed_count}</b> từ
 </div>
 """, unsafe_allow_html=True)
@@ -523,24 +511,24 @@ if mode_choice == "Thẻ Flashcard":
                         <div class="chinese-word">{cur_word['word']}</div>
                         <div class="pinyin-word">{cur_word['pinyin']}</div>
                     </div>
-                    <div style="color: #8C5874; font-size: 13px; font-weight: 500;">👆 <b>Chạm thẻ để lật xem nghĩa & ví dụ</b></div>
+                    <div style="color: #8C4368; font-size: 13px; font-weight: 500;">👆 <b>Chạm thẻ để lật xem nghĩa & ví dụ</b></div>
                 </div>
                 <!-- MẶT SAU -->
                 <div class="flashcard-face flashcard-back">
                     <div>
                         <div style="display:flex; justify-content:space-between; align-items:baseline;">
                             <div>
-                                <span style="font-size:26px; color:#5C1E3F; font-weight:700;">{cur_word['word']}</span>
+                                <span style="font-size:25px; color:#5C1E3F; font-weight:700;">{cur_word['word']}</span>
                                 <span style="font-size:18px; color:#9D4E84; margin-left:8px; font-weight:700;">{cur_word['pinyin']}</span>
                             </div>
                             <span class="badge-pill">BÀI {cur_word['lesson']}</span>
                         </div>
-                        <div style="color:#2E7D5E; font-weight:700; font-size:18px; margin:6px 0 10px 0;">👉 {cur_word['meaning']}</div>
-                        <div style="font-size:12px; font-weight:700; color:#6B2A4E; letter-spacing:0.5px; margin-bottom:4px;">CỤM TỪ KẾT HỢP (KÈM PINYIN):</div>
+                        <div style="color:#059669; font-weight:700; font-size:18px; margin:6px 0 10px 0;">👉 {cur_word['meaning']}</div>
+                        <div style="font-size:12px; font-weight:700; color:#5C1E3F; margin-bottom:4px;">CỤM TỪ KẾT HỢP (KÈM PINYIN):</div>
                         {colloc_html}
                         <div class="example-box">💬 <b>Ví dụ:</b><br>{cur_word['example']}</div>
                     </div>
-                    <div style="color: #8C5874; font-size: 12.5px; text-align: center; margin-top:8px;">👆 <b>Chạm lại để lật về chữ Hán</b></div>
+                    <div style="color: #8C4368; font-size: 12.5px; text-align: center; margin-top:6px;">👆 <b>Chạm lại để lật về chữ Hán</b></div>
                 </div>
             </div>
         </label>
@@ -566,7 +554,7 @@ if mode_choice == "Thẻ Flashcard":
             st.session_state.card_idx = (st.session_state.card_idx + 1) % total_words
             st.rerun()
 
-# --- 2. TRẮC NGHIỆM PHẢN XẠ ---
+# --- 2. TRẮC NGHIỆM (CHỈ CẦN NÚT TIẾP THEO) ---
 elif mode_choice == "Trắc nghiệm":
     st.markdown("##### ✍️ Trắc nghiệm chọn nghĩa đúng của từ")
     
@@ -588,8 +576,7 @@ elif mode_choice == "Trắc nghiệm":
             })
         st.session_state.quiz_list = new_quiz
         st.session_state.quiz_active_idx = 0
-        st.session_state.quiz_answered_correctly = False
-        st.session_state.quiz_error_msg = ""
+        st.session_state.quiz_last_feedback = None
         st.rerun()
 
     total_q = len(st.session_state.quiz_list)
@@ -597,8 +584,8 @@ elif mode_choice == "Trắc nghiệm":
 
     if cur_q_idx >= total_q:
         st.balloons()
-        st.success(f"🎉 **Chúc mừng bạn đã hoàn thành xuất sắc toàn bộ {total_q} câu hỏi trắc nghiệm!**")
-        if st.button("🔄 Luyện tập lại từ đầu", type="primary", use_container_width=True):
+        st.success(f"🎉 **Chúc mừng bạn đã hoàn thành trọn vẹn {total_q} câu hỏi trắc nghiệm!**")
+        if st.button("🔄 Làm bài trắc nghiệm mới", type="primary", use_container_width=True):
             st.session_state.quiz_list = []
             st.rerun()
     else:
@@ -606,73 +593,141 @@ elif mode_choice == "Trắc nghiệm":
         st.caption(f"Câu hỏi: **{cur_q_idx + 1} / {total_q}**")
         st.progress((cur_q_idx) / total_q)
 
+        # Hiển thị thông báo phản hồi của câu vừa trả lời (nếu có)
+        if st.session_state.quiz_last_feedback:
+            fb = st.session_state.quiz_last_feedback
+            if fb["is_correct"]:
+                st.markdown(f"<div style='background:#ECFDF5; border:1px solid #A7F3D0; color:#065F46; padding:10px 14px; border-radius:12px; margin-bottom:12px; font-size:14px;'>✓ <b>Chính xác!</b> Câu trước ({fb['word']}): <b>{fb['correct']}</b></div>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"<div style='background:#FEF2F2; border:1px solid #FECACA; color:#991B1B; padding:10px 14px; border-radius:12px; margin-bottom:12px; font-size:14px;'>❌ <b>Chưa chính xác!</b> Câu trước ({fb['word']}) nghĩa là: <b>{fb['correct']}</b> (Bạn đã chọn: <i>{fb['user_choice']}</i>)</div>", unsafe_allow_html=True)
+
         with st.container(border=True):
             st.markdown(f"""
-            <h2 style="color:#5C1E3F; margin-bottom:4px;">{q_item['word']} <span style="font-size:19px; color:#9D4E84; font-weight:normal;">({q_item['pinyin']})</span></h2>
-            <p style="color:#5A4A54; font-size:15px; margin-bottom:12px;">👉 Từ trên có nghĩa tiếng Việt tương ứng là gì?</p>
+            <h2 style="color:#5C1E3F; margin-bottom:2px;">{q_item['word']} <span style="font-size:20px; color:#9D4E84; font-weight:normal;">({q_item['pinyin']})</span></h2>
+            <p style="color:#4B5563; font-size:14.5px; margin-bottom:14px;">👉 Hãy chọn nghĩa tiếng Việt phù hợp nhất:</p>
             """, unsafe_allow_html=True)
 
             selected_answer = st.radio("Chọn đáp án:", q_item["options"], key=f"quiz_radio_{cur_q_idx}")
 
-            if not st.session_state.quiz_answered_correctly:
-                if st.button("Kiểm tra kết quả", type="primary", use_container_width=True):
-                    if selected_answer == q_item["correct"]:
-                        st.session_state.quiz_answered_correctly = True
-                        st.session_state.quiz_error_msg = ""
-                        st.session_state.learned_ids.add(q_item["id"])
-                        st.rerun()
-                    else:
-                        st.session_state.quiz_error_msg = f"❌ Bạn chọn '{selected_answer}' chưa chính xác. Cùng thử lại nhé!"
-                        st.session_state.failed_ids.add(q_item["id"])
-                        st.rerun()
+            # Nút duy nhất: Bấm Tiếp theo là tự động kiểm tra và chuyển tiếp
+            next_label = "Tiếp theo ➡️" if (cur_q_idx + 1 < total_q) else "🏁 Hoàn thành bài trắc nghiệm"
+            if st.button(next_label, type="primary", use_container_width=True):
+                is_correct = (selected_answer == q_item["correct"])
+                if is_correct:
+                    st.session_state.learned_ids.add(q_item["id"])
+                    st.session_state.failed_ids.discard(q_item["id"])
+                else:
+                    st.session_state.failed_ids.add(q_item["id"])
 
-            if st.session_state.quiz_error_msg:
-                st.error(st.session_state.quiz_error_msg)
+                st.session_state.quiz_last_feedback = {
+                    "word": q_item["word"],
+                    "correct": q_item["correct"],
+                    "user_choice": selected_answer,
+                    "is_correct": is_correct
+                }
+                st.session_state.quiz_active_idx += 1
+                st.rerun()
 
-            if st.session_state.quiz_answered_correctly:
-                st.success(f"✓ Hoàn toàn chính xác! **{q_item['word']}** nghĩa là: **{q_item['correct']}**")
-                next_text = "➡️ Câu tiếp theo" if (cur_q_idx + 1 < total_q) else "🏁 Xem kết quả"
-                if st.button(next_text, type="primary", use_container_width=True):
-                    st.session_state.quiz_active_idx += 1
-                    st.session_state.quiz_answered_correctly = False
-                    st.rerun()
+# --- 3. NỐI TỪ 2 CỘT TƯƠNG TÁC (CHỮ HÁN & NGHĨA) ---
+elif mode_choice == "Nối từ 2 cột":
+    st.markdown("##### 🧩 Trò chơi Nối từ 2 Cột (Chạm từ tiếng Trung ➔ Chạm nghĩa tiếng Việt)")
+    st.caption("💡 Cách chơi: Bấm chọn 1 từ bên Cột Trái, sau đó bấm chọn nghĩa tương ứng bên Cột Phải. Nếu sai sẽ báo đỏ, nếu đúng sẽ đổi màu xanh và khóa lại!")
 
-# --- 3. NỐI TỪ PHẢN XẠ ---
-elif mode_choice == "Nối từ":
-    st.markdown("##### 🧩 Ghép đôi Chữ Hán & Nghĩa tiếng Việt")
-    if "match_sample" not in st.session_state or st.button("🎲 Đổi 5 cặp từ mới"):
-        st.session_state.match_sample = random.sample(current_vocab, min(5, len(current_vocab)))
-        words = [w["word"] for w in st.session_state.match_sample]
-        meanings = [w["meaning"] for w in st.session_state.match_sample]
-        random.shuffle(words)
-        random.shuffle(meanings)
-        st.session_state.m_words = words
-        st.session_state.m_meanings = meanings
+    # Khởi tạo 5 cặp từ mới nếu chưa có hoặc khi bấm đổi
+    if len(st.session_state.match_cards_left) == 0 or st.button("🎲 Đổi 5 cặp từ mới"):
+        sample_size = min(5, len(current_vocab))
+        sampled = random.sample(current_vocab, sample_size)
+        
+        left_items = [{"id": s["id"], "word": s["word"], "pinyin": s["pinyin"]} for s in sampled]
+        right_items = [{"id": s["id"], "meaning": s["meaning"]} for s in sampled]
+        
+        random.shuffle(left_items)
+        random.shuffle(right_items)
+        
+        st.session_state.match_cards_left = left_items
+        st.session_state.match_cards_right = right_items
+        st.session_state.matched_ids = set()
+        st.session_state.selected_left_id = None
+        st.session_state.selected_right_id = None
+        st.session_state.match_error_msg = ""
         st.rerun()
 
-    user_match = {}
-    with st.form("match_form"):
-        for w_text in st.session_state.m_words:
-            entry = next(item for item in st.session_state.match_sample if item["word"] == w_text)
-            st.markdown(f"👉 Từ: <b style='font-size:18px; color:#5C1E3F;'>{w_text}</b> <i>({entry['pinyin']})</i>", unsafe_allow_html=True)
-            user_match[w_text] = st.selectbox(
-                f"Nghĩa của {w_text}:",
-                ["-- Chọn nghĩa phù hợp --"] + st.session_state.m_meanings,
-                key=f"match_box_{w_text}",
-                label_visibility="collapsed"
-            )
-            st.write("")
+    # Kiểm tra nếu hoàn thành đủ 5 cặp
+    if len(st.session_state.matched_ids) == len(st.session_state.match_cards_left) and len(st.session_state.match_cards_left) > 0:
+        st.balloons()
+        st.success("🎉 **Tuyệt vời! Bạn đã ghép chính xác toàn bộ các cặp từ!**")
+        if st.button("🎲 Chơi tiếp 5 cặp khác", type="primary", use_container_width=True):
+            st.session_state.match_cards_left = []
+            st.rerun()
+    else:
+        if st.session_state.match_error_msg:
+            st.markdown(f"<div style='background:#FEF2F2; color:#991B1B; border:1px solid #FECACA; padding:9px 15px; border-radius:12px; margin-bottom:14px; font-size:13.5px;'>{st.session_state.match_error_msg}</div>", unsafe_allow_html=True)
 
-        if st.form_submit_button("Kiểm tra kết quả ghép đôi", type="primary", use_container_width=True):
-            score = 0
-            for item in st.session_state.match_sample:
-                if user_match.get(item["word"]) == item["meaning"]:
-                    score += 1
-                    st.session_state.learned_ids.add(item["id"])
+        col_left, col_right = st.columns(2)
+
+        # CỘT TRÁI: CHỮ HÁN + PINYIN
+        with col_left:
+            st.markdown("<p style='font-weight:700; color:#5C1E3F; text-align:center; font-size:15px; margin-bottom:8px;'>🇨🇳 CỘT TỪ TIẾNG TRUNG</p>", unsafe_allow_html=True)
+            for item in st.session_state.match_cards_left:
+                item_id = item["id"]
+                label_text = f"{item['word']}  ({item['pinyin']})"
+                
+                # Trạng thái ô
+                if item_id in st.session_state.matched_ids:
+                    st.button(f"✓ {label_text}", key=f"matched_l_{item_id}", disabled=True, use_container_width=True)
                 else:
-                    st.session_state.failed_ids.add(item["id"])
-            total_m = len(st.session_state.match_sample)
-            st.success(f"Kết quả: Bạn đã ghép đúng **{score}/{total_m}** cặp từ!")
+                    is_selected = (st.session_state.selected_left_id == item_id)
+                    btn_type = "primary" if is_selected else "secondary"
+                    btn_label = f"👉 {label_text}" if is_selected else label_text
+                    
+                    if st.button(btn_label, key=f"btn_l_{item_id}", type=btn_type, use_container_width=True):
+                        st.session_state.selected_left_id = item_id
+                        st.session_state.match_error_msg = ""
+                        
+                        # Nếu bên phải đã được chọn trước đó -> thực hiện so khớp
+                        if st.session_state.selected_right_id is not None:
+                            if st.session_state.selected_left_id == st.session_state.selected_right_id:
+                                st.session_state.matched_ids.add(item_id)
+                                st.session_state.learned_ids.add(item_id)
+                                st.session_state.selected_left_id = None
+                                st.session_state.selected_right_id = None
+                            else:
+                                st.session_state.match_error_msg = "❌ Cặp từ ghép chưa chính xác, hãy thử lại nhé!"
+                                st.session_state.selected_left_id = None
+                                st.session_state.selected_right_id = None
+                        st.rerun()
+
+        # CỘT PHẢI: NGHĨA TIẾNG VIỆT
+        with col_right:
+            st.markdown("<p style='font-weight:700; color:#5C1E3F; text-align:center; font-size:15px; margin-bottom:8px;'>🇻🇳 CỘT NGHĨA TIẾNG VIỆT</p>", unsafe_allow_html=True)
+            for item in st.session_state.match_cards_right:
+                item_id = item["id"]
+                label_text = item["meaning"]
+                
+                # Trạng thái ô
+                if item_id in st.session_state.matched_ids:
+                    st.button(f"✓ {label_text}", key=f"matched_r_{item_id}", disabled=True, use_container_width=True)
+                else:
+                    is_selected = (st.session_state.selected_right_id == item_id)
+                    btn_type = "primary" if is_selected else "secondary"
+                    btn_label = f"👉 {label_text}" if is_selected else label_text
+                    
+                    if st.button(btn_label, key=f"btn_r_{item_id}", type=btn_type, use_container_width=True):
+                        st.session_state.selected_right_id = item_id
+                        st.session_state.match_error_msg = ""
+                        
+                        # Nếu bên trái đã được chọn trước đó -> thực hiện so khớp
+                        if st.session_state.selected_left_id is not None:
+                            if st.session_state.selected_left_id == st.session_state.selected_right_id:
+                                st.session_state.matched_ids.add(item_id)
+                                st.session_state.learned_ids.add(item_id)
+                                st.session_state.selected_left_id = None
+                                st.session_state.selected_right_id = None
+                            else:
+                                st.session_state.match_error_msg = "❌ Cặp từ ghép chưa chính xác, hãy thử lại nhé!"
+                                st.session_state.selected_left_id = None
+                                st.session_state.selected_right_id = None
+                        st.rerun()
 
 # --- 4. MỤC LỤC TỪ VỰNG CHI TIẾT (CÓ PINYIN ĐẦY ĐỦ) ---
 elif mode_choice == "Mục lục từ vựng":
@@ -684,7 +739,7 @@ elif mode_choice == "Mục lục từ vựng":
         q = search_q.strip().lower()
         filtered = [w for w in current_vocab if q in w["word"].lower() or q in w["pinyin"].lower() or q in w["meaning"].lower()]
 
-    st.caption(f"Hiển thị **{len(filtered)}** từ:")
+    st.caption(f"Hiển thị **{len(filtered)}** từ vựng:")
     for w in filtered:
         collocs_str = "".join([f"<div class='colloc-item'>🌸 {c}</div>" for c in w["collocations"]])
         card_html = f"""
@@ -693,8 +748,8 @@ elif mode_choice == "Mục lục từ vựng":
                 <span style="font-size:24px; font-weight:700; color:#5C1E3F;">{w['word']} <span style="font-size:16px; color:#9D4E84; font-weight:700;">{w['pinyin']}</span></span>
                 <span class="badge-pill">BÀI {w['lesson']} • #{w['id']}</span>
             </div>
-            <div style="color:#2E7D5E; font-weight:700; font-size:16px; margin:4px 0 8px 0;">👉 {w['meaning']}</div>
-            <div style="font-size:12px; font-weight:700; color:#6B2A4E; letter-spacing:0.5px; margin-bottom:4px;">CỤM TỪ KẾT HỢP (KÈM PINYIN):</div>
+            <div style="color:#059669; font-weight:700; font-size:16px; margin:4px 0 8px 0;">👉 {w['meaning']}</div>
+            <div style="font-size:12px; font-weight:700; color:#5C1E3F; margin-bottom:4px;">CỤM TỪ KẾT HỢP (KÈM PINYIN):</div>
             {collocs_str}
             <div class="example-box">💬 <b>Ví dụ:</b><br>{w['example']}</div>
         </div>
